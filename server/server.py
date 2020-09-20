@@ -52,7 +52,7 @@ class SFTPFileHandle(paramiko.SFTPHandle):
 
     def close(self):
         filename = getattr(self, "filename", None)
-        if getattr(self, "bar", None) != None:
+        if hasattr(self, "bar"):
             self.bar.update(self.st_size)
             print("")
         status("File \"%s\" closed!"%filename, 2)
@@ -66,7 +66,7 @@ class SFTPFileHandle(paramiko.SFTPHandle):
         returnval = super().read(offset, length)
         st_size = getattr(self, "st_size", None)
 
-        if getattr(self, "bar", None) != None:
+        if hasattr(self, "bar"):
             if type(returnval) == bytes:
                 self.data_processed += len(returnval)
                 self.bar.update(self.data_processed)
@@ -79,7 +79,7 @@ class SFTPFileHandle(paramiko.SFTPHandle):
         self.data_processed += len(data)
         st_size = getattr(self, "st_size", None)
 
-        if getattr(self, "bar", None):
+        if hasattr(self, "bar"):
             self.bar.update(self.data_processed)
         elif st_size:
             self.bar = ProgressBar(max_value=self.st_size)
